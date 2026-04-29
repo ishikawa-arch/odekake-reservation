@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>オデカケ予約 | ODEKAKE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f6f1e8;
+    --paper-deep: #ece4d2;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4540;
+    --ink-mute: #8a847b;
+    --akane: #c44d3a;
+    --akane-deep: #9c3a2c;
+    --moegi: #5a6e4a;
+    --kincha: #b08c5a;
+    --line: #d6cdb8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "Noto Sans JP", sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 15px;
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(196, 77, 58, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 85% 80%, rgba(90, 110, 74, 0.04) 0%, transparent 50%);
+    min-height: 100vh;
+  }
+
+  .page-header {
+    text-align: center;
+    padding: 56px 24px 36px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+
+  .page-header::before {
+    content: "";
+    position: absolute;
+    top: 24px; left: 50%;
+    transform: translateX(-50%);
+    width: 40px; height: 1px;
+    background: var(--akane);
+  }
+
+  .header-eyebrow {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    color: var(--akane);
+    letter-spacing: 0.18em;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .header-title {
+    font-family: "Noto Serif JP", serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+
+  .header-lead {
+    color: var(--ink-soft);
+    max-width: 640px;
+    margin: 0 auto;
+    font-size: 14px;
+  }
+
+  .tabs-wrap {
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    z-index: 10;
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+  }
+
+  .tabs {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .tab {
+    background: none;
+    border: none;
+    padding: 22px 12px 20px;
+    font-family: "Noto Serif JP", serif;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--ink-mute);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.25s ease;
+    border-bottom: 2px solid transparent;
+  }
+
+  .tab .tab-en {
+    display: block;
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    margin-top: 2px;
+    opacity: 0.6;
+  }
+
+  .tab:hover { color: var(--ink); }
+
+  .tab.active {
+    color: var(--akane);
+    border-bottom-color: var(--akane);
+  }
+
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadeIn 0.4s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-intro {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .section-intro h2 {
+    font-family: "Noto Serif JP", serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .section-intro p {
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+
+  .month-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .month-pill {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-family: "Noto Serif JP", serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+
+  .month-pill:hover { border-color: var(--akane); color: var(--akane); }
+  .month-pill.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 28px;
+  }
+
+  .card {
+    background: white;
+    border: 1px solid var(--line);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px -20px rgba(0,0,0,0.18);
+  }
+
+  .card-image {
+    aspect-ratio: 16 / 10;
+    background: var(--paper-deep);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+
+  .card-date-stamp {
+    position: absolute;
+    top: 14px; left: 14px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(4px);
+    padding: 8px 14px;
+    text-align: center;
+    border-left: 3px solid var(--akane);
+  }
+
+  .card-date-stamp .month {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--akane);
+    text-transform: uppercase;
+  }
+
+  .card-date-stamp .day {
+    font-family: "Noto Serif JP", serif;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .card-tag {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 4px 10px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+
+  .card-tag.gathered { background: var(--moegi); }
+
+  .card-body {
+    padding: 22px 22px 18px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-title {
+    font-family: "Noto Serif JP", serif;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .card-meta-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .card-meta-label {
+    font-family: "Noto Serif JP", serif;
+    color: var(--ink-mute);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    min-width: 56px;
+  }
+
+  .card-desc {
+    color: var(--ink-soft);
+    font-size: 13px;
+    margin-bottom: 18px;
+    flex: 1;
+  }
+
+  .progress { margin-bottom: 16px; }
+
+  .progress-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+
+  .progress-stat strong {
+    font-family: "Noto Serif JP", serif;
+    font-size: 16px;
+    color: var(--moegi);
+    font-weight: 600;
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: var(--paper-deep);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--moegi) 0%, var(--kincha) 100%);
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+
+  .progress-state {
+    font-size: 11px;
+    margin-top: 6px;
+    color: var(--ink-mute);
+  }
+
+  .progress-state.met { color: var(--akane); font-weight: 700; }
+
+  .btn-apply {
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 14px;
+    font-family: "Noto Serif JP", serif;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+  }
+
+  .btn-apply:hover { background: var(--akane); }
+  .btn-apply.disabled { background: var(--ink-mute); cursor: not-allowed; }
+
+  .order-form {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 36px 32px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .order-form .form-eyebrow {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    color: var(--akane);
+    letter-spacing: 0.15em;
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .order-form h3 {
+    font-family: "Noto Serif JP", serif;
+    font-size: 20px;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .order-placeholder {
+    background: var(--paper-deep);
+    border: 1px dashed var(--kincha);
+    padding: 28px;
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.9;
+  }
+
+  .order-placeholder strong {
+    font-family: "Noto Serif JP", serif;
+    color: var(--akane);
+    display: block;
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--ink-mute);
+    font-family: "Noto Serif JP", serif;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-mute);
+    font-family: "Noto Serif JP", serif;
+  }
+
+  @media (max-width: 600px) {
+    .page-header { padding: 36px 16px 24px; }
+    main { padding: 28px 16px 60px; }
+    .order-form { padding: 24px 18px; }
+    .tab { font-size: 13px; padding: 16px 6px 14px; }
+    .tab .tab-en { font-size: 9px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="header-eyebrow">RESERVATION</div>
+  <h1 class="header-title">オデカケ予約</h1>
+  <p class="header-lead">行きたいその気持ちを、形に。倶楽部企画・オーダーメイド・集まったら開催の３つの入り口からお選びください。</p>
+</header>
+
+<div class="tabs-wrap">
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="club" role="tab">
+      オデカケ倶楽部
+      <span class="tab-en">CLUB</span>
+    </button>
+    <button class="tab" data-tab="order" role="tab">
+      オーダーメイド
+      <span class="tab-en">CUSTOM</span>
+    </button>
+    <button class="tab" data-tab="gathered" role="tab">
+      集まったら開催
+      <span class="tab-en">GATHERING</span>
+    </button>
+  </nav>
+</div>
+
+<main>
+
+  <!-- TAB 1: 倶楽部 -->
+  <section class="panel active" id="panel-club">
+    <div class="section-intro">
+      <h2>毎月企画のパッケージツアー</h2>
+      <p>季節・話題のスポットを巡る企画です。少人数制でゆっくりと。気になる月をお選びください。</p>
+    </div>
+    <div class="month-nav" id="month-nav"></div>
+    <div class="cards" id="cards-club"><div class="loading">読み込み中…</div></div>
+  </section>
+
+  <!-- TAB 2: オーダーメイド -->
+  <section class="panel" id="panel-order">
+    <div class="section-intro">
+      <h2>あなただけのオデカケを企画</h2>
+      <p>「行きたい場所」と「願い」をお聞かせください。理学療法士・看護師・ケアマネがチームで現地調査を含めた専用プランをご提案します。</p>
+    </div>
+    <div class="order-form">
+      <div class="form-eyebrow">CUSTOM REQUEST</div>
+      <h3>オーダーメイド予約・ご相談</h3>
+      <div class="order-placeholder">
+        <strong>申込フォームは現在準備中です</strong>
+        準備が整い次第、こちらにフォームを設置します。<br>
+        お急ぎの方は、トップの「お問い合わせ」または LINE からご相談ください。
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 3: 集まったら開催 -->
+  <section class="panel" id="panel-gathered">
+    <div class="section-intro">
+      <h2>集まったら開催する企画</h2>
+      <p>「行きたい人が一定数集まったら開催」する企画です。気になるものがあれば、お早めにお申し込みください。</p>
+    </div>
+    <div class="cards" id="cards-gathered"><div class="loading">読み込み中…</div></div>
+  </section>
+
+</main>
+
+<script>
+/* ============================================================
+   オデカケ予約ページ
+   - データは data/events.json から読み込み
+   - URLクエリ ?type=club|order|gathered で初期タブを指定
+     （WordPressメニューからのドロップダウン遷移と連動）
+   ============================================================ */
+
+const APPLY_FORM_URL = ""; // 後で申込フォーム（Googleフォーム等）のURLを入れる。空なら準備中表示。
+
+const $ = (sel, el = document) => el.querySelector(sel);
+const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return {
+    monthEn: d.toLocaleString("en-US", { month: "short" }),
+    day: d.getDate(),
+    full: `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日（${"日月火水木金土"[d.getDay()]}）`,
+    yearMonth: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`
+  };
+}
+
+function applyButtonHTML(eventId) {
+  if (!APPLY_FORM_URL) {
+    return `<a class="btn-apply disabled" href="https://o-dekake.com/contact/" target="_blank" rel="noopener">お問い合わせから申込</a>`;
+  }
+  return `<a class="btn-apply" href="${APPLY_FORM_URL}${encodeURIComponent(eventId)}" target="_blank" rel="noopener">申し込む</a>`;
+}
+
+function renderClubMonth(events, yearMonth) {
+  const list = events.filter(e => e.type === "club" && formatDate(e.date).yearMonth === yearMonth);
+  const wrap = $("#cards-club");
+
+  if (list.length === 0) {
+    wrap.innerHTML = '<div class="empty">この月の予定はまだ準備中です。</div>';
+    return;
+  }
+
+  wrap.innerHTML = list.map(ev => {
+    const d = formatDate(ev.date);
+    return `
+      <article class="card">
+        <div class="card-image" style="background-image:url('${ev.image}')">
+          <div class="card-date-stamp">
+            <div class="month">${d.monthEn}</div>
+            <div class="day">${d.day}</div>
+          </div>
+          <div class="card-tag">CLUB</div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">${ev.title}</h3>
+          <div class="card-meta">
+            <div class="card-meta-row"><span class="card-meta-label">日　程</span><span>${d.full}</span></div>
+            <div class="card-meta-row"><span class="card-meta-label">行き先</span><span>${ev.location}</span></div>
+            <div class="card-meta-row"><span class="card-meta-label">参加費</span><span>${ev.fee}</span></div>
+            <div class="card-meta-row"><span class="card-meta-label">定　員</span><span>${ev.capacity}名</span></div>
+            <div class="card-meta-row"><span class="card-meta-label">締　切</span><span>${formatDate(ev.deadline).full}</span></div>
+          </div>
+          <p class="card-desc">${ev.description}</p>
+          ${applyButtonHTML(ev.id)}
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function buildMonthNav(events) {
+  const clubEvents = events.filter(e => e.type === "club");
+  const months = [...new Set(clubEvents.map(e => formatDate(e.date).yearMonth))].sort();
+  const nav = $("#month-nav");
+  nav.innerHTML = "";
+
+  months.forEach((ym, i) => {
+    const [y, m] = ym.split("-");
+    const btn = document.createElement("button");
+    btn.className = "month-pill" + (i === 0 ? " active" : "");
+    btn.textContent = `${y}年${parseInt(m, 10)}月分`;
+    btn.dataset.month = ym;
+    btn.addEventListener("click", () => {
+      $$(".month-pill").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderClubMonth(events, ym);
+    });
+    nav.appendChild(btn);
+  });
+
+  if (months.length > 0) {
+    renderClubMonth(events, months[0]);
+  } else {
+    $("#cards-club").innerHTML = '<div class="empty">予定は順次追加していきます。</div>';
+  }
+}
+
+function renderGathered(events) {
+  const list = events.filter(e => e.type === "gathered");
+  const wrap = $("#cards-gathered");
+
+  if (list.length === 0) {
+    wrap.innerHTML = '<div class="empty">現在募集中の企画はありません。</div>';
+    return;
+  }
+
+  wrap.innerHTML = list.map(ev => {
+    const d = formatDate(ev.date);
+    const pct = Math.min(100, Math.round((ev.current / ev.capacity) * 100));
+    const met = ev.current >= ev.capacity;
+    return `
+      <article class="card">
+        <div class="card-image" style="background-image:url('${ev.image}')">
+          <div class="card-date-stamp">
+            <div class="month">${d.monthEn}</div>
+            <div class="day">${d.day}</div>
+          </div>
+          <div class="card-tag gathered">GATHERING</div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">${ev.title}</h3>
+          <div class="card-meta">
+            <div class="card-meta-row"><span class="card-meta-label">予定日</span><span>${d.full}</span></div>
+            <div class="card-meta-row"><span class="card-meta-label">行き先</span><span>${ev.location}</span></div>
+            <div class="card-meta-row"><span class="card-meta-label">参加費</span><span>${ev.fee}</span></div>
+          </div>
+          <div class="progress">
+            <div class="progress-stat">
+              <span>集まり状況</span>
+              <span><strong>${ev.current}</strong> / ${ev.capacity}名</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+            <div class="progress-state ${met ? "met" : ""}">${met ? "★ 開催確定 — 残席わずか" : `あと ${ev.capacity - ev.current} 名で開催確定`}</div>
+          </div>
+          <p class="card-desc">${ev.description}</p>
+          ${applyButtonHTML(ev.id)}
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+/* ===== タブ切替 ===== */
+function activateTab(target) {
+  $$(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === target));
+  $$(".panel").forEach(p => p.classList.toggle("active", p.id === `panel-${target}`));
+}
+
+$$(".tab").forEach(tab => {
+  tab.addEventListener("click", () => activateTab(tab.dataset.tab));
+});
+
+/* ===== URLクエリで初期タブを決定（WordPressドロップダウンと連動） ===== */
+const params = new URLSearchParams(window.location.search);
+const initialTab = ["club", "order", "gathered"].includes(params.get("type"))
+  ? params.get("type")
+  : "club";
+activateTab(initialTab);
+
+/* ===== データ読み込み ===== */
+fetch("./data/events.json", { cache: "no-cache" })
+  .then(r => {
+    if (!r.ok) throw new Error("events.json not found");
+    return r.json();
+  })
+  .then(data => {
+    const events = data.events || [];
+    buildMonthNav(events);
+    renderGathered(events);
+  })
+  .catch(err => {
+    console.error(err);
+    $("#cards-club").innerHTML = '<div class="empty">予定の読み込みに失敗しました。</div>';
+    $("#cards-gathered").innerHTML = '<div class="empty">予定の読み込みに失敗しました。</div>';
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+{
+  "_comment": "オデカケ予約データ。新規追加は scripts/add_event.py を使うか、このファイルを直接編集してください。",
+  "_schema": {
+    "id": "club-YYYY-MM-XX or gathered-YYYY-NNN",
+    "type": "club | gathered",
+    "title": "ツアー名",
+    "date": "YYYY-MM-DD（開催日）",
+    "deadline": "YYYY-MM-DD（締切日）",
+    "capacity": "定員（数値）",
+    "current": "（gatheredのみ）現在の申込人数",
+    "fee": "参加費（文字列、例: 5,500円〜）",
+    "location": "行き先",
+    "image": "画像URL（images/*.jpg または外部URL）",
+    "description": "説明文"
+  },
+  "events": [
+    {
+      "id": "club-2026-04-01",
+      "type": "club",
+      "title": "春の桜　鶴舞公園とランチの旅",
+      "date": "2026-04-08",
+      "deadline": "2026-04-03",
+      "capacity": 6,
+      "fee": "5,500円〜",
+      "location": "名古屋市・鶴舞公園",
+      "image": "https://o-dekake.com/wp/wp-content/uploads/2026/03/IMG_7942-600x338.jpeg",
+      "description": "桜の名所をゆっくり散策し、桜を望むレストランで春のランチを。車椅子のままご参加いただけます。"
+    },
+    {
+      "id": "club-2026-04-02",
+      "type": "club",
+      "title": "ゴッホ展　家族がつないだ画家の夢",
+      "date": "2026-04-22",
+      "deadline": "2026-04-15",
+      "capacity": 4,
+      "fee": "7,800円〜",
+      "location": "名古屋市美術館",
+      "image": "https://o-dekake.com/wp/wp-content/uploads/2026/03/IMG_7905-1-600x338.jpeg",
+      "description": "話題のゴッホ展へ。混雑時間を避けた朝の枠でご案内します。鑑賞用の補助具もご用意。"
+    },
+    {
+      "id": "club-2026-05-01",
+      "type": "club",
+      "title": "母の日　旅館ランチと庭園めぐり",
+      "date": "2026-05-10",
+      "deadline": "2026-05-04",
+      "capacity": 8,
+      "fee": "9,800円〜",
+      "location": "西尾市・老舗旅館",
+      "image": "https://o-dekake.com/wp/wp-content/uploads/2025/11/IMG_6738-600x338.jpeg",
+      "description": "母の日に合わせ、由緒ある旅館で会席ランチ。食後は手入れの行き届いた庭園を眺めながらのお茶を。"
+    },
+    {
+      "id": "club-2026-05-02",
+      "type": "club",
+      "title": "ぎふワールド・ローズガーデン",
+      "date": "2026-05-24",
+      "deadline": "2026-05-18",
+      "capacity": 6,
+      "fee": "6,200円〜",
+      "location": "可児市",
+      "image": "https://o-dekake.com/wp/wp-content/uploads/2025/10/IMG_6680-600x338.jpeg",
+      "description": "薔薇の最盛期に合わせた半日コース。バリアフリー動線の確認済み。ガイド役のクルーと共に。"
+    },
+    {
+      "id": "gathered-2026-001",
+      "type": "gathered",
+      "title": "ジブリパーク　半日プラン",
+      "date": "2026-06-15",
+      "deadline": "2026-05-31",
+      "capacity": 6,
+      "current": 4,
+      "fee": "12,000円〜",
+      "location": "長久手市",
+      "image": "https://o-dekake.com/wp/wp-content/uploads/2026/02/5A3FD1EC-30AB-46FD-A2E2-37792A944538-600x338.jpeg",
+      "description": "予約制エリアを中心に、無理のない半日コース。坂道・階段の少ないルートを事前調査済み。"
+    },
+    {
+      "id": "gathered-2026-002",
+      "type": "gathered",
+      "title": "うなぎパイ工場と極上うなぎランチ",
+      "date": "2026-06-28",
+      "deadline": "2026-06-14",
+      "capacity": 8,
+      "current": 7,
+      "fee": "10,500円〜",
+      "location": "浜松市",
+      "image": "https://o-dekake.com/wp/wp-content/uploads/2026/03/line_oa_chat_251222_135733_group_7-600x338.jpeg",
+      "description": "工場見学と老舗のうなぎランチをセットに。あと1名で開催確定です。"
+    }
+  ]
+}
