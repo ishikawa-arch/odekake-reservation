@@ -55,7 +55,20 @@ PAGE_TITLE = "オデカケ予約"
 
 PAGE_CONTENT = f"""<!-- wp:html -->
 <div style="margin: -20px -20px 0;">
-<iframe src="{GH_PAGES_URL}" style="width:100%; height:1900px; border:0; display:block;" loading="lazy" title="オデカケ予約"></iframe>
+<iframe id="odekake-reservation-frame" src="{GH_PAGES_URL}?type=club" style="width:100%; height:1900px; border:0; display:block;" title="オデカケ予約"></iframe>
+<script>
+(function() {{
+  var valid = ['club', 'order', 'gathered'];
+  var params = new URLSearchParams(window.location.search);
+  var type = params.get('type');
+  if (!valid.includes(type)) return;
+  var url = '{GH_PAGES_URL}?type=' + type;
+  var f = document.getElementById('odekake-reservation-frame');
+  if (!f) return;
+  f.src = url;
+  if (f.dataset) f.dataset.src = url;
+}})();
+</script>
 </div>
 <!-- /wp:html -->
 """
