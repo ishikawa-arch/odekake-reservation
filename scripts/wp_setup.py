@@ -76,7 +76,8 @@ PAGE_CONTENT = f"""<!-- wp:html -->
 # WordPressメニューに追加する親+子の構成
 MENU_ITEMS = [
     {
-        "title": "オデカケ予約Reservation",
+        "title": "オデカケ予約",
+        "description": "Reservation",
         "url": f"{WP_BASE_URL}/{PAGE_SLUG}/" if WP_BASE_URL else f"/{PAGE_SLUG}/",
         "type": "custom",  # 直接URLを指定
         "children": [
@@ -127,7 +128,7 @@ class WPClient:
     def list_menu_items(self, menu_id):
         return self._req("GET", "menu-items", params={"menus": menu_id, "per_page": 100})
 
-    def create_menu_item(self, menu_id, title, url, parent=0, menu_order=999, item_type="custom"):
+    def create_menu_item(self, menu_id, title, url, parent=0, menu_order=999, item_type="custom", description=""):
         payload = {
             "title": title,
             "menus": menu_id,
@@ -137,6 +138,8 @@ class WPClient:
             "url": url,
             "status": "publish",
         }
+        if description:
+            payload["description"] = description
         return self._req("POST", "menu-items", json=payload)
 
 
@@ -232,6 +235,7 @@ def setup_menu(wp, menu_ids=None, dry_run=False):
                 title=parent_title,
                 url=parent_def["url"],
                 menu_order=999,
+                description=parent_def.get("description", ""),
             )
             parent_id = parent_item["id"]
             print(f"  ✓ 親メニュー追加: '{parent_title}' (id={parent_id})")
@@ -242,6 +246,7 @@ def setup_menu(wp, menu_ids=None, dry_run=False):
                     url=c["url"],
                     parent=parent_id,
                     menu_order=i,
+                    description=c.get("description", ""),
                 )
                 print(f"    └─ '{c['title']}' 追加 (id={child['id']})")
 
